@@ -18,18 +18,28 @@ const posts: Posts = {};
 app.use(express.json());
 
 app.get("/post", (req, res) => {
-  res.send(posts);
+  try {
+    res.send(posts);
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Internal server error");
+  }
 });
 
 app.post("/post", (req, res) => {
-  const id = randomBytes(4).toString("hex");
-  const { title } = req.body;
-  posts[id] = {
-    id,
-    title,
-  };
+  try {
+    const id = randomBytes(4).toString("hex");
+    const { title } = req.body;
+    posts[id] = {
+      id,
+      title,
+    };
 
-  res.status(201).send(posts[id]);
+    res.status(201).send(posts[id]);
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Internal server error");
+  }
 });
 
 app.listen(4000, () => {
