@@ -1,5 +1,7 @@
 import express, { Express } from "express";
 import { randomBytes } from "crypto";
+import morgan from "morgan";
+
 const app: Express = express();
 
 type Post = {
@@ -15,6 +17,7 @@ type Posts = {
 
 const posts: Posts = {};
 
+app.use(morgan("dev"));
 app.use(express.json());
 
 app.get("/post", (req, res) => {

@@ -1,5 +1,6 @@
 import express, { Express } from "express";
 import { randomBytes } from "crypto";
+import morgan from "morgan";
 
 type PostId = string;
 type CommentId = string;
@@ -11,6 +12,7 @@ type Comment = {
 
 const app: Express = express();
 
+app.use(morgan("dev"));
 app.use(express.json());
 
 const commentsByPostId: { [key: PostId]: Comment[] } = {};
