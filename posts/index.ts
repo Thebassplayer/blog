@@ -1,26 +1,33 @@
 import express, { Express } from "express";
 import { randomBytes } from "crypto";
 import morgan from "morgan";
-
-const app: Express = express();
+import cors from "cors";
 
 type Post = {
   id: string;
   title: string;
 };
-
 type ID = string;
-
 type Posts = {
   [key: ID]: Post;
 };
 
 const posts: Posts = {};
 
+const app: Express = express();
+
+app.set("trust proxy", 1);
+app.use(
+  cors({
+    origin: "http://localhost:5173",
+    methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
+    credentials: true,
+  })
+);
 app.use(morgan("dev"));
 app.use(express.json());
 
-app.get("/post", (req, res) => {
+app.get("/posts", (req, res) => {
   try {
     res.send(posts);
   } catch (error) {
@@ -29,7 +36,7 @@ app.get("/post", (req, res) => {
   }
 });
 
-app.post("/post", (req, res) => {
+app.post("/posts", (req, res) => {
   try {
     const id = randomBytes(4).toString("hex");
     const { title } = req.body;

@@ -1,6 +1,7 @@
 import express, { Express } from "express";
 import { randomBytes } from "crypto";
 import morgan from "morgan";
+import cors from "cors";
 
 type PostId = string;
 type CommentId = string;
@@ -12,6 +13,14 @@ type Comment = {
 
 const app: Express = express();
 
+app.set("trust proxy", 1);
+app.use(
+  cors({
+    origin: "http://localhost:5173",
+    methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
+    credentials: true,
+  })
+);
 app.use(morgan("dev"));
 app.use(express.json());
 
@@ -20,7 +29,7 @@ const commentsByPostId: { [key: PostId]: Comment[] } = {};
 app.get("/posts/:id/comments", (req, res) => {
   try {
     const { id: postId } = req.params;
-    const comments = commentsByPostId[postId] || [];
+    const comments: Comment[] = commentsByPostId[postId] || [];
 
     res.send(comments);
   } catch (error) {
@@ -37,6 +46,9 @@ app.post("/posts/:id/comments", (req, res) => {
 
     const comments: Comment[] = commentsByPostId[postId] || [];
     comments.push({ id: commentId, content: commentContent });
+    commentsByPostId[postId] = comments;
+
+    console.log("commentsByPostId: ", commentsByPostId);
 
     res.status(201).send(comments);
   } catch (error) {
