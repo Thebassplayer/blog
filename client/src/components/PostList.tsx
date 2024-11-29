@@ -1,14 +1,15 @@
 import { useState, useEffect, useCallback } from "react";
 import axios from "axios";
+import CommentCreate from "./CommentCreate";
 
-type ID = string;
+export type PostID = string;
 
 type Post = {
-  id: ID;
+  id: PostID;
   title: string;
 };
 type Posts = {
-  [key: ID]: Post;
+  [key: PostID]: Post;
 };
 
 const PostList = () => {
@@ -32,15 +33,18 @@ const PostList = () => {
     <div>
       <h1>Post List</h1>
       <ul className="d-flex flex-row flex-wrap justify-content-between">
-        {PostsArray.map(([id, title]) => (
-          <li
-            key={id}
-            className="card"
-            style={{ width: "30%", marginBottom: "20px" }}
-          >
-            <div className="card-body"></div>
-            <h3>{title}</h3>
-          </li>
+        {PostsArray.map(([postId, title]) => (
+          <>
+            <li
+              key={postId}
+              className="card"
+              style={{ width: "30%", marginBottom: "20px" }}
+            >
+              <div className="card-body"></div>
+              <h3>{title}</h3>
+              <CommentCreate postId={postId} />
+            </li>
+          </>
         ))}
       </ul>
     </div>
