@@ -13,7 +13,10 @@ type Comment = {
 
 const app: Express = express();
 
+const commentsByPostId: { [key: PostId]: Comment[] } = {};
+
 app.set("trust proxy", 1);
+
 app.use(
   cors({
     origin: "http://localhost:5173",
@@ -23,8 +26,6 @@ app.use(
 );
 app.use(morgan("dev"));
 app.use(express.json());
-
-const commentsByPostId: { [key: PostId]: Comment[] } = {};
 
 app.get("/posts/:id/comments", (req, res) => {
   try {

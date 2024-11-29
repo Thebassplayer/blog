@@ -3,11 +3,12 @@ import { randomBytes } from "crypto";
 import morgan from "morgan";
 import cors from "cors";
 
+type ID = string;
+
 type Post = {
-  id: string;
+  id: ID;
   title: string;
 };
-type ID = string;
 type Posts = {
   [key: ID]: Post;
 };
