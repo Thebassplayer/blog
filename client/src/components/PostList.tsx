@@ -31,9 +31,14 @@ const PostList = () => {
   return (
     <div>
       <h1>Post List</h1>
-      <ul>
+      <ul className="d-flex flex-row flex-wrap justify-content-between">
         {PostsArray.map(([id, title]) => (
-          <li key={id}>
+          <li
+            key={id}
+            className="card"
+            style={{ width: "30%", marginBottom: "20px" }}
+          >
+            <div className="card-body"></div>
             <h3>{title}</h3>
           </li>
         ))}
