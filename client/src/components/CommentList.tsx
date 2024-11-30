@@ -38,7 +38,9 @@ const CommentList = ({ postId }: CommentLisProps) => {
   return (
     <ul>
       {comments.map(({ content, id }) => (
-        <li key={id}>{content}</li>
+        <li key={id} className="list-unstyled">
+          {content}
+        </li>
       ))}
     </ul>
   );

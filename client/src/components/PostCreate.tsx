@@ -14,20 +14,22 @@ const PostCreate = () => {
   };
 
   return (
-    <div>
-      <form action="Submit" onSubmit={submitHandler}>
-        <div className="form-group">
-          <label htmlFor="title">Title</label>
+    <div className="container mt-3">
+      <form onSubmit={submitHandler} className="d-flex flex-column gap-3">
+        <div className="form-group mb-0">
+          <label htmlFor="title" className="m-0">
+            Title
+          </label>
           <input
             id="title"
             type="text"
-            className="form-control"
+            className="form-control m-0"
             placeholder="Your comment here"
             onChange={e => setTitle(e.target.value)}
             value={title}
           />
         </div>
-        <button className="btn btn-primary">Submit</button>
+        <button className="btn btn-primary mt-0">Submit</button>
       </form>
     </div>
   );
