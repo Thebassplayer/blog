@@ -2,22 +2,22 @@ import axios from "axios";
 import { PostID } from "./PostList";
 import { useState } from "react";
 
-type Comment = string;
+export type CommentContent = string;
 
 type CommentCreateProps = {
   postId: PostID;
 };
 
 const CommentCreate = ({ postId }: CommentCreateProps) => {
-  const [comment, setComment] = useState<Comment>("");
+  const [commentContent, setCommentContent] = useState<CommentContent>("");
 
   const submitHandler = async (event: React.FormEvent<HTMLFormElement>) => {
     try {
       event.preventDefault();
       await axios.post(`http://localhost:4001/posts/${postId}/comments`, {
-        comment,
+        content: commentContent,
       });
-      setComment("");
+      setCommentContent("");
     } catch (error) {
       console.error(error);
     }
@@ -32,8 +32,8 @@ const CommentCreate = ({ postId }: CommentCreateProps) => {
             id="comment"
             type="text"
             className="form-control"
-            value={comment}
-            onChange={e => setComment(e.target.value)}
+            value={commentContent}
+            onChange={e => setCommentContent(e.target.value)}
           />
         </div>
         <button type="submit" className="btn btn-primary">

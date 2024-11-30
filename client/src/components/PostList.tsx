@@ -1,12 +1,15 @@
 import { useState, useEffect, useCallback } from "react";
 import axios from "axios";
 import CommentCreate from "./CommentCreate";
+import CommentList from "./CommentList";
 
 export type PostID = string;
 
+type PostTitle = string;
+
 type Post = {
   id: PostID;
-  title: string;
+  title: PostTitle;
 };
 type Posts = {
   [key: PostID]: Post;
@@ -43,6 +46,7 @@ const PostList = () => {
               <div className="card-body"></div>
               <h3>{title}</h3>
               <CommentCreate postId={postId} />
+              <CommentList postId={postId} />
             </li>
           </>
         ))}
