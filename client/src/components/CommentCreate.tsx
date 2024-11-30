@@ -24,10 +24,12 @@ const CommentCreate = ({ postId }: CommentCreateProps) => {
   };
 
   return (
-    <div>
-      <form action="submit" onSubmit={submitHandler}>
-        <div className="form-group">
-          <label htmlFor="comment">New Comment</label>
+    <div className="container mt-3">
+      <form onSubmit={submitHandler} className="d-flex flex-column gap-3">
+        <div className="form-group mb-0">
+          <label htmlFor="comment" className="m-0">
+            New Comment
+          </label>
           <input
             id="comment"
             type="text"
@@ -36,7 +38,7 @@ const CommentCreate = ({ postId }: CommentCreateProps) => {
             onChange={e => setCommentContent(e.target.value)}
           />
         </div>
-        <button type="submit" className="btn btn-primary">
+        <button type="submit" className="btn btn-primary mt-0">
           Submit
         </button>
       </form>
