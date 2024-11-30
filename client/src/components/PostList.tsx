@@ -34,7 +34,6 @@ const PostList = () => {
 
   return (
     <div>
-      <h1>Post List</h1>
       <ul className="d-flex flex-row flex-wrap justify-content-between">
         {PostsArray.map(([postId, title]) => (
           <>
@@ -43,10 +42,11 @@ const PostList = () => {
               className="card"
               style={{ width: "30%", marginBottom: "20px" }}
             >
-              <div className="card-body"></div>
-              <h3>{title}</h3>
-              <CommentCreate postId={postId} />
-              <CommentList postId={postId} />
+              <div className="card-body">
+                <h3>{title}</h3>
+                <CommentCreate postId={postId} />
+                <CommentList postId={postId} />
+              </div>
             </li>
           </>
         ))}
