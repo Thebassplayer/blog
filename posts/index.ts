@@ -2,6 +2,7 @@ import express, { Express } from "express";
 import { randomBytes } from "crypto";
 import morgan from "morgan";
 import cors from "cors";
+import axios from "axios";
 
 type ID = string;
 
@@ -13,6 +14,18 @@ type Posts = {
   [key: ID]: Post;
 };
 
+type Event = {
+  type: "PostCreated";
+  data: Post;
+};
+
+const PORT = 4000;
+const POSTS_SERVICE_URL = `http://localhost:${PORT}`;
+const COMMENTS_SERVICE_URL = "http://localhost:4001";
+const QUERY_SERVICE_URL = `http://localhost:4002`;
+const EVENT_BUS_SERVICE_URL = `http://localhost:4005`;
+const CLIENT_URL = "http://localhost:5173";
+
 const posts: Posts = {};
 
 const app: Express = express();
@@ -20,7 +33,7 @@ const app: Express = express();
 app.set("trust proxy", 1);
 app.use(
   cors({
-    origin: "http://localhost:5173",
+    origin: CLIENT_URL,
     methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
     credentials: true,
   })
@@ -37,7 +50,7 @@ app.get("/posts", (req, res) => {
   }
 });
 
-app.post("/posts", (req, res) => {
+app.post("/posts", async (req, res) => {
   try {
     const id = randomBytes(4).toString("hex");
     const { title } = req.body;
@@ -46,6 +59,13 @@ app.post("/posts", (req, res) => {
       title,
     };
 
+    const event: Event = {
+      type: "PostCreated",
+      data: posts[id],
+    };
+
+    await axios.post(`${EVENT_BUS_SERVICE_URL}/events`, event);
+
     res.status(201).send(posts[id]);
   } catch (error) {
     console.error(error);
@@ -53,6 +73,12 @@ app.post("/posts", (req, res) => {
   }
 });
 
-app.listen(4000, () => {
-  console.log("Server is running on http://localhost:4000");
+app.post("/events", (req, res) => {
+  const event: Event = req.body;
+  console.log("Received event:", event);
+  res.send({});
+});
+
+app.listen(PORT, () => {
+  console.log(`Server is running on http://localhost:${PORT}`);
 });

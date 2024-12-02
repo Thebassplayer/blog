@@ -2,6 +2,7 @@ import express, { Express } from "express";
 import { randomBytes } from "crypto";
 import morgan from "morgan";
 import cors from "cors";
+import axios from "axios";
 
 type PostId = string;
 type CommentId = string;
@@ -10,6 +11,21 @@ type Comment = {
   id: CommentId;
   content: CommentContent;
 };
+type Event = {
+  type: "CommentCreated";
+  data: {
+    id: CommentId;
+    content: CommentContent;
+    postId: PostId;
+  };
+};
+
+const PORT = 4001;
+const POSTS_SERVICE_URL = `http://localhost:4000`;
+const COMMENTS_SERVICE_URL = `http://localhost:${PORT}`;
+const QUERY_SERVICE_URL = `http://localhost:4002`;
+const EVENT_BUS_SERVICE_URL = `http://localhost:4005`;
+const CLIENT_URL = "http://localhost:5173";
 
 const app: Express = express();
 
@@ -19,7 +35,7 @@ app.set("trust proxy", 1);
 
 app.use(
   cors({
-    origin: "http://localhost:5173",
+    origin: [CLIENT_URL, EVENT_BUS_SERVICE_URL],
     methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
     credentials: true,
   })
@@ -39,7 +55,7 @@ app.get("/posts/:id/comments", (req, res) => {
   }
 });
 
-app.post("/posts/:id/comments", (req, res) => {
+app.post("/posts/:id/comments", async (req, res) => {
   try {
     const commentId: CommentId = randomBytes(4).toString("hex");
     const { id: postId } = req.params;
@@ -49,7 +65,16 @@ app.post("/posts/:id/comments", (req, res) => {
     comments.push({ id: commentId, content: commentContent });
     commentsByPostId[postId] = comments;
 
-    console.log("commentsByPostId: ", commentsByPostId);
+    const event: Event = {
+      type: "CommentCreated",
+      data: {
+        id: commentId,
+        content: commentContent,
+        postId,
+      },
+    };
+
+    await axios.post(`${EVENT_BUS_SERVICE_URL}/events`, event);
 
     res.status(201).send(comments);
   } catch (error) {
@@ -58,6 +83,12 @@ app.post("/posts/:id/comments", (req, res) => {
   }
 });
 
-app.listen(4001, () => {
-  console.log("Server is running on http://localhost:4001");
+app.post("/events", (req, res) => {
+  const event: Event = req.body;
+  console.log("Received event:", event);
+  res.send({});
+});
+
+app.listen(PORT, () => {
+  console.log(`Server is running on http://localhost:${PORT}`);
 });

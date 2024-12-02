@@ -19,6 +19,7 @@ const CommentCreate = ({ postId }: CommentCreateProps) => {
       });
       setCommentContent("");
     } catch (error) {
+      setCommentContent("");
       console.error(error);
     }
   };
