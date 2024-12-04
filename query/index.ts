@@ -19,6 +19,10 @@ type Comment = {
 
 type Comments = Comment[];
 
+type Status = "pending" | "approved" | "rejected";
+
+type EventType = "CommentCreated" | "PostCreated";
+
 type Posts = {
   [key: PostId]: {
     id: PostId;
@@ -28,12 +32,13 @@ type Posts = {
 };
 
 type Event = {
-  type: "CommentCreated" | "PostCreated";
+  type: EventType;
   data:
     | {
         id: CommentId;
         content: CommentContent;
         postId: PostId;
+        status: Status;
       }
     | Post;
 };
@@ -84,6 +89,7 @@ app.post("/events", (req, res) => {
         id: CommentId;
         content: CommentContent;
         postId: PostId;
+        status: Status;
       };
 
       const post = posts[postId];
