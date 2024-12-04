@@ -7,9 +7,11 @@ import axios from "axios";
 type PostId = string;
 type CommentId = string;
 type CommentContent = string;
+type Status = "pending" | "approved" | "rejected";
 type Comment = {
   id: CommentId;
   content: CommentContent;
+  status: Status;
 };
 type Event = {
   type: "CommentCreated";
@@ -17,6 +19,7 @@ type Event = {
     id: CommentId;
     content: CommentContent;
     postId: PostId;
+    status: Status;
   };
 };
 
@@ -62,7 +65,12 @@ app.post("/posts/:id/comments", async (req, res) => {
     const { content: commentContent } = req.body;
 
     const comments: Comment[] = commentsByPostId[postId] || [];
-    comments.push({ id: commentId, content: commentContent });
+    const defaultStatus: Status = "pending";
+    comments.push({
+      id: commentId,
+      content: commentContent,
+      status: defaultStatus,
+    });
     commentsByPostId[postId] = comments;
 
     const event: Event = {
@@ -70,6 +78,7 @@ app.post("/posts/:id/comments", async (req, res) => {
       data: {
         id: commentId,
         content: commentContent,
+        status: defaultStatus,
         postId,
       },
     };
