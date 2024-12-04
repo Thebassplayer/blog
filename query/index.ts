@@ -52,7 +52,12 @@ const app: Express = express();
 app.set("trust proxy", 1);
 app.use(
   cors({
-    origin: [POSTS_SERVICE_URL, COMMENTS_SERVICE_URL, EVENT_BUS_SERVICE_URL],
+    origin: [
+      POSTS_SERVICE_URL,
+      COMMENTS_SERVICE_URL,
+      EVENT_BUS_SERVICE_URL,
+      CLIENT_URL,
+    ],
     methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
     credentials: true,
   })
