@@ -3,6 +3,8 @@ import { randomBytes } from "crypto";
 import morgan from "morgan";
 import cors from "cors";
 import axios from "axios";
+import { PostId, CommentId, CommentContent, Status } from "../comments/index";
+import { EventType } from "../event-bus/index";
 
 type ID = string;
 
@@ -15,8 +17,13 @@ type Posts = {
 };
 
 type Event = {
-  type: "PostCreated";
-  data: Post;
+  type: EventType;
+  data: {
+    id: CommentId;
+    content: CommentContent;
+    postId: PostId;
+    status: Status;
+  };
 };
 
 const PORT = 4003;
@@ -34,7 +41,7 @@ const app: Express = express();
 app.set("trust proxy", 1);
 app.use(
   cors({
-    origin: CLIENT_URL,
+    origin: [COMMENTS_SERVICE_URL],
     methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
     credentials: true,
   })
@@ -42,32 +49,21 @@ app.use(
 app.use(morgan("dev"));
 app.use(express.json());
 
-app.get("/posts", (req, res) => {
-  try {
-    res.send(posts);
-  } catch (error) {
-    console.error(error);
-    res.status(500).send("Internal server error");
-  }
-});
-
 app.post("/events", async (req, res) => {
   try {
-    const id = randomBytes(4).toString("hex");
-    const { title } = req.body;
-    posts[id] = {
-      id,
-      title,
-    };
+    const { type, data } = req.body as Event;
 
-    const event: Event = {
-      type: "PostCreated",
-      data: posts[id],
-    };
-
-    await axios.post(`${EVENT_BUS_SERVICE_URL}/events`, event);
-
-    res.status(201).send(posts[id]);
+    if (type === "CommentCreated") {
+      const status = data.content.includes("orange") ? "rejected" : "approved";
+      await axios.post(`${EVENT_BUS_SERVICE_URL}/events`, {
+        type: "CommentModerated",
+        data: {
+          ...data,
+          status,
+        },
+      });
+      res.status;
+    }
   } catch (error) {
     console.error(error);
     res.status(500).send("Internal server error");

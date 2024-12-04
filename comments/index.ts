@@ -3,18 +3,20 @@ import { randomBytes } from "crypto";
 import morgan from "morgan";
 import cors from "cors";
 import axios from "axios";
+import { EventType } from "../event-bus/index";
 
-type PostId = string;
-type CommentId = string;
-type CommentContent = string;
-type Status = "pending" | "approved" | "rejected";
+export type PostId = string;
+export type CommentId = string;
+export type CommentContent = string;
+export type Status = "pending" | "approved" | "rejected";
 type Comment = {
   id: CommentId;
   content: CommentContent;
   status: Status;
 };
+
 type Event = {
-  type: "CommentCreated";
+  type: EventType;
   data: {
     id: CommentId;
     content: CommentContent;

@@ -4,10 +4,13 @@ import { randomBytes } from "crypto";
 import morgan from "morgan";
 import cors from "cors";
 
+export type EventType = "CommentCreated" | "CommentModerated";
+
 const PORT = 4005;
 const POSTS_SERVICE_URL = "http://localhost:4000";
 const COMMENTS_SERVICE_URL = "http://localhost:4001";
 const QUERY_SERVICE_URL = `http://localhost:4002`;
+const MODERATION_SERVICE_URL = `http://localhost:4003`;
 const EVENT_BUS_SERVICE_URL = `http://localhost:${PORT}`;
 
 const app: Express = express();
@@ -30,6 +33,7 @@ app.post("/events", async (req, res) => {
     await axios.post(`${POSTS_SERVICE_URL}/events`, event);
     await axios.post(`${COMMENTS_SERVICE_URL}/events`, event);
     await axios.post(`${QUERY_SERVICE_URL}/events`, event);
+    await axios.post(`${MODERATION_SERVICE_URL}/events`, event);
 
     res.status(201).send("Event forwarded");
   } catch (error) {
