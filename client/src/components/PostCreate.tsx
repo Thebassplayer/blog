@@ -1,12 +1,17 @@
 import axios from "axios";
 import { useState } from "react";
+
+const postsServiceUrl: string = import.meta.env.VITE_APP_POSTS_SERVICE_URL;
+
+console.log(postsServiceUrl);
+
 const PostCreate = () => {
   const [title, setTitle] = useState<string>("");
 
   const submitHandler = async (event: React.FormEvent<HTMLFormElement>) => {
     try {
       event.preventDefault();
-      await axios.post("http://localhost:4000/posts", { title });
+      await axios.post(`http://localhost:4000/posts`, { title });
       setTitle("");
     } catch (error) {
       setTitle("");

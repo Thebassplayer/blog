@@ -64,6 +64,7 @@ app.post("/events", async (req, res) => {
       });
       res.status;
     }
+    res.status(200).send({});
   } catch (error) {
     console.error(error);
     res.status(500).send("Internal server error");
@@ -77,5 +78,7 @@ app.post("/events", (req, res) => {
 });
 
 app.listen(PORT, () => {
-  console.log(`Server is running on http://localhost:${PORT}`);
+  console.log(
+    `Server is running on http://localhost:${PORT} - MODERATION SERVICE`
+  );
 });

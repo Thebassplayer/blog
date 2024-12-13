@@ -16,7 +16,7 @@ type Posts = {
   [key: PostID]: Post;
 };
 
-const API_QUERY_URL: string = import.meta.env.VITE_APP_QUERY_URL;
+const API_QUERY_URL: string = import.meta.env.VITE_APP_QUERY_SERVICE_URL;
 
 const PostList = () => {
   const [posts, setPosts] = useState<Posts>({});

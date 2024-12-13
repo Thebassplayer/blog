@@ -85,6 +85,8 @@ app.post("/posts/:id/comments", async (req, res) => {
       },
     };
 
+    console.log(`Received event: ${event.type} for post: ${event.data.postId}`);
+
     await axios.post(`${EVENT_BUS_SERVICE_URL}/events`, event);
 
     res.status(201).send(comments);
@@ -94,12 +96,43 @@ app.post("/posts/:id/comments", async (req, res) => {
   }
 });
 
-app.post("/events", (req, res) => {
-  const event: Event = req.body;
-  console.log("Received event:", event);
-  res.send({});
+app.post("/events", async (req, res) => {
+  try {
+    const event: Event = req.body;
+    const { type, data } = event;
+
+    if (type === "CommentModerated") {
+      const { id, postId, status } = data;
+      const comments = commentsByPostId[postId] || [];
+      const comment = comments.find(comment => comment.id === id);
+
+      if (comment) {
+        comment.status = status;
+      } else {
+        comments.push(data);
+      }
+
+      await axios.post(`${EVENT_BUS_SERVICE_URL}/events`, {
+        type: "CommentUpdated",
+        data: {
+          ...data,
+          status,
+        },
+      });
+
+      res.status(200).send({});
+      return;
+    }
+
+    res.send({});
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Internal server error");
+  }
 });
 
 app.listen(PORT, () => {
-  console.log(`Server is running on http://localhost:${PORT}`);
+  console.log(
+    `Server is running on http://localhost:${PORT} - COMMENTS SERVICE`
+  );
 });

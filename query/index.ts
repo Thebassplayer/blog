@@ -15,13 +15,14 @@ type CommentContent = string;
 type Comment = {
   id: CommentId;
   content: CommentContent;
+  status?: Status;
 };
 
 type Comments = Comment[];
 
 type Status = "pending" | "approved" | "rejected";
 
-type EventType = "CommentCreated" | "PostCreated";
+type EventType = "CommentCreated" | "PostCreated" | "CommentUpdated";
 
 type Posts = {
   [key: PostId]: {
@@ -31,17 +32,29 @@ type Posts = {
   };
 };
 
-type Event = {
-  type: EventType;
-  data:
-    | {
+type Event =
+  | {
+      type: "CommentCreated";
+      data: {
         id: CommentId;
         content: CommentContent;
         postId: PostId;
         status: Status;
-      }
-    | Post;
-};
+      };
+    }
+  | {
+      type: "PostCreated";
+      data: Post;
+    }
+  | {
+      type: "CommentUpdated";
+      data: {
+        id: CommentId;
+        content: CommentContent;
+        postId: PostId;
+        status: Status;
+      };
+    };
 
 const PORT = 4002;
 const POSTS_SERVICE_URL = `http://localhost:4000`;
@@ -97,6 +110,24 @@ app.post("/events", (req, res) => {
       post.comments.push({ id, content });
     }
 
+    if (type === "CommentUpdated") {
+      const { id, content, postId, status } = data as {
+        id: CommentId;
+        content: CommentContent;
+        postId: PostId;
+        status: Status;
+      };
+
+      const post = posts[postId];
+      const comment = post.comments?.find(comment => comment.id === id);
+      if (comment) {
+        comment.status = status;
+        comment.content = content;
+      } else {
+        console.error("Comment not found");
+      }
+    }
+
     console.dir(posts, { depth: null });
 
     res.send({});
@@ -107,5 +138,5 @@ app.post("/events", (req, res) => {
 });
 
 app.listen(PORT, () => {
-  console.log(`Server is running on http://localhost:${PORT}`);
+  console.log(`Server is running on http://localhost:${PORT} - QUERY SERVICE`);
 });
