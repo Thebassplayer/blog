@@ -80,5 +80,6 @@ app.post("/events", (req, res) => {
 });
 
 app.listen(PORT, () => {
+  console.log("v 0.0.1");
   console.log(`Server is running on http://localhost:${PORT} - POSTS SERVICE`);
 });
