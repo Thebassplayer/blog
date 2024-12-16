@@ -1,13 +1,14 @@
 import express, { Express } from "express";
-import { randomBytes } from "crypto";
 import morgan from "morgan";
 import cors from "cors";
 import axios from "axios";
-import { PostId, CommentId, CommentContent, Status } from "../comments/index";
-import { EventType } from "../event-bus/index";
 
+type EventType = "CommentCreated" | "CommentModerated";
+type CommentId = string;
+type CommentContent = string;
+type PostId = string;
+type Status = "pending" | "approved" | "rejected";
 type ID = string;
-
 type Post = {
   id: ID;
   title: string;
@@ -15,7 +16,6 @@ type Post = {
 type Posts = {
   [key: ID]: Post;
 };
-
 type Event = {
   type: EventType;
   data: {
@@ -27,7 +27,7 @@ type Event = {
 };
 
 const PORT = 4003;
-const COMMENTS_SERVICE_URL = "http://localhost:4001";
+const COMMENTS_SERVICE_URL = "http://comments-srv:4001";
 const EVENT_BUS_SERVICE_URL = `http://event-bus-srv:4005`;
 
 const posts: Posts = {};
