@@ -59,8 +59,7 @@ type Event =
 const PORT = 4002;
 const POSTS_SERVICE_URL = `http://localhost:4000`;
 const COMMENTS_SERVICE_URL = "http://localhost:4001";
-const QUERY_SERVICE_URL = `http://localhost:${PORT}`;
-const EVENT_BUS_SERVICE_URL = `http://localhost:4005`;
+const EVENT_BUS_SERVICE_URL = `http://event-bus-srv:4005`;
 const CLIENT_URL = "http://localhost:5173";
 
 const posts: Posts = {};
