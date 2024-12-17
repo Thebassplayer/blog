@@ -7,7 +7,7 @@ const PostCreate = () => {
   const submitHandler = async (event: React.FormEvent<HTMLFormElement>) => {
     try {
       event.preventDefault();
-      await axios.post(`http://post.com/posts`, { title });
+      await axios.post(`http://post.com/posts/create`, { title });
       setTitle("");
     } catch (error) {
       setTitle("");
