@@ -16,14 +16,11 @@ type Posts = {
   [key: PostID]: Post;
 };
 
-const API_QUERY_URL: string = import.meta.env.VITE_APP_QUERY_SERVICE_URL;
-
 const PostList = () => {
   const [posts, setPosts] = useState<Posts>({});
 
   const fetchPosts = async () => {
-    if (!API_QUERY_URL) return;
-    const res = await axios.get(API_QUERY_URL);
+    const res = await axios.get("http://post.com/posts");
     setPosts(res.data);
   };
 
