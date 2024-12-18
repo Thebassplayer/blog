@@ -27,7 +27,7 @@ type Event = {
 
 const PORT = 4001;
 const EVENT_BUS_SERVICE_URL = `http://event-bus-srv:4005`;
-const CLIENT_URL = "http://localhost:5173";
+const CLIENT_URL = "http://posts.com";
 
 const app: Express = express();
 
