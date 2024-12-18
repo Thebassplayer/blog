@@ -21,20 +21,14 @@ type Event = {
 
 const PORT = 4000;
 const EVENT_BUS_SERVICE_URL = `http://event-bus-srv:4005`;
-const CLIENT_URL = "http://posts.com";
 
 const posts: Posts = {};
 
 const app: Express = express();
 
 app.set("trust proxy", 1);
-app.use(
-  cors({
-    origin: CLIENT_URL,
-    methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
-    credentials: true,
-  })
-);
+app.use(cors());
+app.options("*", cors());
 app.use(morgan("dev"));
 app.use(express.json());
 

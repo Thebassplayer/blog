@@ -14,7 +14,7 @@ const CommentCreate = ({ postId }: CommentCreateProps) => {
   const submitHandler = async (event: React.FormEvent<HTMLFormElement>) => {
     try {
       event.preventDefault();
-      await axios.post(`http://post.com/posts/${postId}/comments`, {
+      await axios.post(`http://posts.com/posts/${postId}/comments`, {
         content: commentContent,
       });
       setCommentContent("");
